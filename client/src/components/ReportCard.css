@@ -1,0 +1,129 @@
+/* File: client/src/components/ReportCard.css */
+
+/* --- YOUR EXISTING STYLES (NO CHANGES) --- */
+.report-card {
+  background-color: #1f1f1f;
+  border: 1px solid #333;
+  border-radius: 12px;
+  overflow: hidden; /* This keeps the image corners rounded */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
+  display: flex; /* We will use flexbox for the layout */
+  flex-direction: column;
+}
+
+/* This makes the card lift and glow on hover */
+.report-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(187, 134, 252, 0.15);
+}
+
+.report-photo {
+  width: 100%;
+  height: 300px; /* Give the photo a fixed height */
+  object-fit: cover; /* This ensures the image covers the area without stretching */
+}
+
+.card-content {
+  padding: 1.5rem; /* Add good spacing inside the card */
+  flex-grow: 1; /* Allows this section to grow and fill available space */
+}
+
+.card-content h2 {
+  margin-top: 0;
+  margin-bottom: 0.5rem;
+  font-size: 1.75rem;
+  color: #fff;
+}
+
+.card-content p {
+  color: #b0b0b0; /* A softer color for the text */
+  line-height: 1.6;
+  margin-bottom: 0.5rem;
+}
+
+/* Style the Edit and Delete Buttons */
+.card-actions {
+  display: flex;
+  gap: 10px;
+  padding: 0 1.5rem 1.5rem; /* Add padding to the bottom */
+  margin-top: auto; /* Pushes buttons to the bottom of the card */
+}
+
+.edit-button,
+.delete-button {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+  text-decoration: none; /* For the 'Edit' Link */
+  display: inline-block;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.edit-button {
+  background-color: #5865f2; /* A nice blue */
+  color: white;
+}
+
+.delete-button {
+  background-color: #ed4245; /* A clear red */
+  color: white;
+}
+
+.edit-button:hover {
+  background-color: #4752c4;
+}
+
+.delete-button:hover {
+  background-color: #c43235;
+}
+
+/* --- ✅ NEW STYLES ADDED AT THE BOTTOM --- */
+
+/* This new class styles the header (name + tag) */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem; /* We move the margin from h2 to here */
+}
+
+.card-header h2 {
+  margin: 0; /* Remove default margin */
+}
+
+/* This new class styles the description <p> tag */
+.card-description {
+  /* This limits the text to 2 lines */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+/* This is the base style for your new tag */
+.status-tag {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* This is the red "Missing" style you wanted! */
+.status-missing {
+  background-color: #ed4245; /* Red */
+  color: white;
+}
+
+/* This style is for when you change the status to "Found" */
+.status-found {
+  background-color: #57f287; /* Green */
+  color: #121212;
+}

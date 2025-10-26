@@ -1,0 +1,164 @@
+/* File: client/src/pages/Form.css */
+
+.form-container {
+  max-width: 700px;
+  margin: 2rem auto; /* Center the form */
+  padding: 2.5rem;
+  background-color: #1f1f1f;
+  border-radius: 12px;
+  border: 1px solid #333;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+}
+
+.professional-form h2 {
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #fff;
+  font-size: 2rem;
+}
+
+.professional-form p { /* Style the subtitle */
+  text-align: center;
+  margin-bottom: 2.5rem;
+  color: #b0b0b0;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: block; /* Label on its own line */
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  color: #e0e0e0;
+  font-size: 0.95rem;
+}
+
+/* Style all input types consistently */
+.form-group input[type="text"],
+.form-group input[type="number"],
+.form-group input[type="tel"],
+.form-group input[type="file"],
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 14px 18px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box; /* Important for padding */
+}
+
+.form-group select {
+  /* Add arrow styling if needed */
+  appearance: none; /* Remove default arrow */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23e0e0e0'%3E%3Cpath fill-rule='evenodd' d='M4.22 6.22a.75.75 0 011.06 0L8 8.94l2.72-2.72a.75.75 0 111.06 1.06l-3.25 3.25a.75.75 0 01-1.06 0L4.22 7.28a.75.75 0 010-1.06z' clip-rule='evenodd' /%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1em;
+  padding-right: 2.5rem; /* Make space for arrow */
+}
+
+.form-group textarea {
+  resize: vertical; /* Allow vertical resize only */
+  min-height: 100px;
+}
+
+/* Style the file input button */
+.form-group input[type="file"] {
+  padding: 10px; /* Adjust padding */
+  cursor: pointer;
+}
+.form-group input[type="file"]::-webkit-file-upload-button {
+  background-color: #555;
+  color: #e0e0e0;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-right: 10px;
+  transition: background-color 0.2s;
+}
+.form-group input[type="file"]::-webkit-file-upload-button:hover {
+  background-color: #666;
+}
+.file-name {
+  font-size: 0.9rem;
+  color: #aaa;
+  margin-top: 5px;
+}
+
+
+/* Focus state for inputs */
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #bb86fc;
+  box-shadow: 0 0 0 3px rgba(187, 134, 252, 0.2);
+}
+
+/* Small helper text */
+.form-group small {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  color: #aaa;
+}
+
+/* Layout for side-by-side fields */
+.form-row {
+  display: flex;
+  gap: 1.5rem; /* Space between fields */
+}
+.form-row .form-group {
+  flex: 1; /* Make fields share space equally */
+}
+
+/* Submit Button Style */
+.submit-button {
+  width: 100%;
+  padding: 16px 20px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  background-color: #bb86fc; /* Your theme purple */
+  color: #121212;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 1rem;
+}
+
+.submit-button:hover {
+  background-color: #a062f8;
+}
+
+/* Error Message Style */
+.error-message {
+  background-color: rgba(237, 66, 69, 0.2); /* Red background */
+  color: #ed4245; /* Red text */
+  border: 1px solid #ed4245;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .form-row {
+    flex-direction: column; /* Stack fields vertically */
+    gap: 0; /* Remove gap */
+  }
+  .form-container {
+    padding: 1.5rem;
+  }
+  .professional-form h2 {
+    font-size: 1.5rem;
+  }
+}

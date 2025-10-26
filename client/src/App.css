@@ -1,0 +1,13 @@
+/* File: client/src/App.css */
+
+.reports-container {
+  display: grid;
+  /* This is the magic for a responsive grid:
+     - It creates as many columns as can fit.
+     - Each column will be a minimum of 350px wide.
+     - '1fr' means they will all share the extra space equally. */
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 2rem; /* This creates a perfect space between all the cards */
+}
+
+

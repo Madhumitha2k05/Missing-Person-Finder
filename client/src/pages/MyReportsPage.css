@@ -1,0 +1,29 @@
+/* File: client/src/pages/MyReportsPage.css */
+
+/* This styles the new status buttons */
+.status-button-found,
+.status-button-missing {
+  padding: 10px 16px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+  font-size: 0.9rem;
+}
+
+.status-button-found {
+  background-color: #57f287; /* Green */
+  color: #121212;
+}
+.status-button-found:hover {
+  background-color: #3fcc6c;
+}
+
+.status-button-missing {
+  background-color: #f7baba; /* Light red */
+  color: #121212;
+}
+.status-button-missing:hover {
+  background-color: #f09a9a;
+}

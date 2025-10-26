@@ -1,0 +1,18 @@
+# Dependency directories
+node_modules/
+client/node_modules/
+
+# Vite build output
+client/dist/
+
+# Log files
+npm-debug.log
+*.log
+
+# Environment variables (VERY IMPORTANT)
+.env
+server/.env
+
+# Mac/Windows system files
+.DS_Store
+Thumbs.db

@@ -1,0 +1,92 @@
+/* File: client/src/pages/AuthForm.css */
+
+.auth-container {
+  max-width: 450px; /* Limit the width */
+  margin: 4rem auto; /* Center the form with space above */
+  padding: 2.5rem 3rem;
+  background-color: #1f1f1f;
+  border-radius: 12px;
+  border: 1px solid #333;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  text-align: center; /* Center the title */
+}
+
+.auth-container h2 {
+  margin-bottom: 2rem;
+  color: #fff;
+  font-size: 2rem;
+}
+
+.auth-form .form-group {
+  margin-bottom: 1.5rem;
+  text-align: left; /* Align labels and inputs left */
+}
+
+.auth-form label {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  color: #e0e0e0;
+  font-size: 0.95rem;
+}
+
+.auth-form input[type="text"],
+.auth-form input[type="email"],
+.auth-form input[type="password"] {
+  width: 100%;
+  padding: 14px 18px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  box-sizing: border-box; /* Include padding in width */
+}
+
+.auth-form input:focus {
+  outline: none;
+  border-color: #bb86fc;
+  box-shadow: 0 0 0 3px rgba(187, 134, 252, 0.2);
+}
+
+.auth-button {
+  width: 100%;
+  padding: 16px 20px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  background-color: #bb86fc; /* Theme purple */
+  color: #121212;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 1rem;
+}
+
+.auth-button:hover {
+  background-color: #a062f8;
+}
+
+.auth-form .error-message {
+  background-color: rgba(237, 66, 69, 0.2);
+  color: #ed4245;
+  border: 1px solid #ed4245;
+  padding: 1rem;
+  border-radius: 6px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+/* Link below the button (e.g., "Don't have an account?") */
+.auth-link {
+  display: block;
+  margin-top: 1.5rem;
+  color: #bb86fc;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.auth-link:hover {
+  text-decoration: underline;
+}

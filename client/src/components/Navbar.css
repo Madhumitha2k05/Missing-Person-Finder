@@ -1,0 +1,77 @@
+/* File: client/src/components/Navbar.css */
+
+.navbar {
+  display: flex;
+  justify-content: space-between; /* Pushes brand to left, links to right */
+  align-items: center;
+  background-color: #1f1f1f;
+  padding: 1rem 2rem; /* Consistent padding */
+  border-bottom: 1px solid #333;
+}
+
+/* --- Brand/Logo Styling --- */
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #fff;
+  text-decoration: none; /* Removes underline */
+  transition: color 0.2s ease;
+  /* Ensure no pseudo-elements adding characters */
+  position: relative;
+}
+.navbar-brand:hover {
+  color: #bb86fc; /* Your theme's hover color */
+}
+/* Explicitly remove any potential added content */
+.navbar-brand::before,
+.navbar-brand::after {
+    content: none;
+}
+
+
+/* --- Links Section --- */
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem; /* Creates spacing between all items */
+}
+
+/* Style ALL links AND the logout button */
+.navbar-links a,
+.navbar-links .logout-button {
+  color: #e0e0e0; /* Soft white */
+  text-decoration: none; /* Removes underline */
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  padding: 5px 0; /* Add slight vertical padding for better hover */
+}
+
+/* Resets the button to look like text */
+.logout-button {
+  background: none;
+  border: none;
+  padding: 0; /* Reset padding */
+  margin: 0; /* Reset margin */
+  font-family: inherit; /* Makes the font match the links */
+  /* Re-apply link styles to ensure consistency */
+  color: #e0e0e0;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+/* Styles "My Reports" link with the icon */
+.profile-link {
+  display: flex;
+  align-items: center;
+  gap: 8px; /* Space between icon and text */
+}
+
+/* Hover effect for ALL items */
+.navbar-links a:hover,
+.navbar-links .logout-button:hover {
+  color: #bb86fc; /* Glows with your theme color */
+}

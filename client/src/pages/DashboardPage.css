@@ -1,0 +1,79 @@
+/* File: client/src/pages/DashboardPage.css */
+
+.dashboard-header {
+  text-align: center; /* Centers your title and subtitle */
+  margin-bottom: 2rem;
+}
+
+.dashboard-header h1 {
+  font-size: 2.5rem;
+  color: #fff;
+}
+
+.dashboard-header p {
+  font-size: 1.1rem;
+  color: #b0b0b0;
+  margin-top: 0.5rem;
+}
+
+/* This styles the container for the search bar and buttons */
+.search-container {
+  display: flex; /* Aligns items in a row */
+  flex-wrap: wrap; /* Allows buttons to wrap on small screens */
+  gap: 1rem; /* Space between items */
+  max-width: 900px; /* Sets a max width */
+  margin: 0 auto 2rem; /* Centers the whole container */
+}
+
+/* This is the main search bar */
+.search-bar {
+  flex-grow: 1; /* Makes the search bar take up most of the space */
+  min-width: 300px; /* Prevents it from getting too small */
+  padding: 14px 20px;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  border: 1px solid #444;
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-bar:focus {
+  outline: none;
+  border-color: #bb86fc;
+  box-shadow: 0 0 0 4px rgba(187, 134, 252, 0.2);
+}
+
+/* This styles your new buttons */
+.find-near-me-btn,
+.clear-filter-btn {
+  padding: 14px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap; /* Keep text on one line */
+}
+
+.find-near-me-btn {
+  background-color: #bb86fc; /* Your theme's purple */
+  color: #121212;
+}
+.find-near-me-btn:hover {
+  background-color: #a062f8;
+}
+.find-near-me-btn:disabled {
+  background-color: #444;
+  color: #888;
+  cursor: not-allowed;
+}
+
+.clear-filter-btn {
+  background-color: #555;
+  color: #e0e0e0;
+}
+.clear-filter-btn:hover {
+  background-color: #666;
+}

@@ -1,0 +1,110 @@
+/* client/src/pages/ReportDetailPage.css */
+
+.detail-page-container {
+  /* Add other styles as needed */
+  padding-bottom: 2rem;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    color: #bb86fc;
+    text-decoration: none;
+    font-weight: 500;
+}
+.back-link:hover {
+    text-decoration: underline;
+}
+
+
+.detail-card {
+    background-color: #1f1f1f;
+    border: 1px solid #333;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    display: flex; /* Arrange photo and info side-by-side on larger screens */
+    flex-direction: column; /* Stack on small screens */
+}
+
+.detail-photo {
+    width: 100%;
+    max-height: 400px; /* Limit image height */
+    object-fit: cover;
+}
+
+.detail-info {
+    padding: 1.5rem 2rem;
+    flex-grow: 1; /* Allow info to take remaining space */
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap; /* Allow wrapping on small screens */
+  gap: 1rem; /* Space between name and tag */
+}
+.detail-header h1 { margin: 0; font-size: 2.2rem; color: #fff;}
+
+.detail-info p {
+    color: #b0b0b0;
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+}
+ .detail-info p strong {
+    color: #e0e0e0;
+ }
+
+/* Status Tag Styles (copied from ReportCard.css) */
+.status-tag {
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+.status-missing { background-color: #ed4245; color: white;}
+.status-found { background-color: #57f287; color: #121212; }
+
+
+/* --- Map Styles --- */
+.map-section {
+  background-color: #1f1f1f;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 1.5rem 2rem;
+}
+
+.map-section h2 {
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #fff;
+  text-align: center;
+}
+
+.map-wrapper {
+  height: 400px; /* YOU MUST DEFINE A HEIGHT */
+  width: 100%;
+  border-radius: 8px; /* Optional rounded corners for map */
+  overflow: hidden; /* Ensures map stays within bounds */
+  border: 1px solid #444; /* Optional border */
+}
+
+.map-section p { /* Style the fallback message */
+    color: #b0b0b0;
+    text-align: center;
+}
+
+ /* Responsive adjustments for side-by-side layout */
+@media (min-width: 768px) {
+    .detail-card {
+        flex-direction: row; /* Side-by-side */
+    }
+    .detail-photo {
+        width: 40%; /* Adjust width as needed */
+        max-height: none; /* Remove height limit */
+    }
+}

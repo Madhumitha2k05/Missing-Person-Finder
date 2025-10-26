@@ -1,0 +1,21 @@
+/* File: client/src/index.css */
+
+/* A modern CSS reset to make styling consistent across browsers */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background-color: #121212; /* Dark background */
+  color: #e0e0e0; /* Light text */
+}
+
+/* This is our main container class */
+.container {
+  max-width: 1200px; /* The content will never get wider than this */
+  margin: 0 auto; /* This automatically centers the container horizontally */
+  padding: 2rem; /* Adds some space on the left and right sides */
+}
