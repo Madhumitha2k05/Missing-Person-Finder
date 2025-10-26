@@ -1,13 +1,14 @@
 /* File: client/src/pages/DashboardPage.css */
 
 .dashboard-header {
-  text-align: center; /* Centers your title and subtitle */
+  text-align: center;
   margin-bottom: 2rem;
 }
 
 .dashboard-header h1 {
   font-size: 2.5rem;
   color: #fff;
+  margin-bottom: 0.5rem;
 }
 
 .dashboard-header p {
@@ -18,17 +19,17 @@
 
 /* This styles the container for the search bar and buttons */
 .search-container {
-  display: flex; /* Aligns items in a row */
-  flex-wrap: wrap; /* Allows buttons to wrap on small screens */
-  gap: 1rem; /* Space between items */
-  max-width: 900px; /* Sets a max width */
-  margin: 0 auto 2rem; /* Centers the whole container */
+  display: flex; 
+  flex-wrap: wrap; 
+  gap: 1rem; 
+  max-width: 900px; 
+  margin: 0 auto 1.5rem; /* Reduced bottom margin */
 }
 
 /* This is the main search bar */
 .search-bar {
-  flex-grow: 1; /* Makes the search bar take up most of the space */
-  min-width: 300px; /* Prevents it from getting too small */
+  flex-grow: 1; 
+  min-width: 300px; 
   padding: 14px 20px;
   font-size: 1.1rem;
   border-radius: 8px;
@@ -44,7 +45,7 @@
   box-shadow: 0 0 0 4px rgba(187, 134, 252, 0.2);
 }
 
-/* This styles your new buttons */
+/* This styles your buttons */
 .find-near-me-btn,
 .clear-filter-btn {
   padding: 14px 20px;
@@ -54,7 +55,7 @@
   border-radius: 6px;
   cursor: pointer;
   transition: all 0.2s ease;
-  white-space: nowrap; /* Keep text on one line */
+  white-space: nowrap; 
 }
 
 .find-near-me-btn {
@@ -76,4 +77,42 @@
 }
 .clear-filter-btn:hover {
   background-color: #666;
+}
+
+
+/* ✅ --- STYLES FOR YOUR AGE FILTERS --- ✅ */
+/* (These were already in your file and are correct) */
+.filter-container {
+  display: flex;
+  flex-wrap: wrap; /* Allow buttons to wrap on small screens */
+  justify-content: center; /* Center the buttons */
+  gap: 0.75rem; /* Space between buttons */
+  max-width: 900px;
+  margin: 0 auto 2.5rem; /* Center and add space below */
+}
+
+.filter-chip {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 20px; /* Makes it a "pill" shape */
+  border: 1px solid #444;
+  background-color: #2a2a2a; /* Dark background */
+  color: #e0e0e0; /* Light text */
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Style for the non-active buttons on hover */
+.filter-chip:hover {
+  background-color: #3a3a3a;
+  border-color: #666;
+}
+
+/* This is the style for the SELECTED (active) button */
+.filter-chip.active {
+  background-color: #bb86fc; /* Theme purple */
+  color: #121212; /* Dark text */
+  border-color: #bb86fc;
+  font-weight: 600;
 }
