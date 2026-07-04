@@ -1,3 +1,5 @@
+// File: server/models/User.js
+
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
@@ -13,6 +15,11 @@ const UserSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
+  },
+  // ✅ NEW FIELD: This separates normal users from administrators
+  isAdmin: {
+    type: Boolean,
+    default: false, // New users are normal users by default
   },
   registerDate: {
     type: Date,

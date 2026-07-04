@@ -9,25 +9,24 @@ function EditReportPage() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
-    name: '', age: '', gender: 'Male', lastSeenLocation: '', description: '', contactPhone: '' // Added phone
+    name: '', age: '', gender: 'Male', lastSeenLocation: '', description: '', contactPhone: '' // Your existing field
   });
   const [photo, setPhoto] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Fetch existing data
+  // Your existing useEffect (no change)
   useEffect(() => {
     const fetchReport = async () => {
       try {
         const response = await axios.get(`http://localhost:5001/api/reports/${id}`);
-        // Ensure all fields exist, provide defaults if not
         setFormData({
           name: response.data.name || '',
           age: response.data.age || '',
           gender: response.data.gender || 'Male',
           lastSeenLocation: response.data.lastSeenLocation || '',
           description: response.data.description || '',
-          contactPhone: response.data.contactPhone || '' // Fetch phone
+          contactPhone: response.data.contactPhone || '' // This was already correct
         });
       } catch (err) {
         console.error('Could not fetch report data', err);
@@ -39,21 +38,23 @@ function EditReportPage() {
     fetchReport();
   }, [id]);
 
+  // Your existing handleChange (no change)
   const handleChange = (e) => {
     const { name, value } = e.target;
     const updatedValue = name === 'age' ? (value ? Number(value) : '') : value;
     setFormData({ ...formData, [name]: updatedValue });
   };
 
+  // Your existing handlePhotoChange (no change)
   const handlePhotoChange = (e) => {
     setPhoto(e.target.files[0]);
   };
 
+  // Your existing handleSubmit (no change)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     const reportData = new FormData();
-    // Use Object.entries for cleaner looping
     Object.entries(formData).forEach(([key, value]) => {
       reportData.append(key, value);
     });
@@ -87,12 +88,13 @@ function EditReportPage() {
       {error && <p className="error-message">{error}</p>}
 
        <form onSubmit={handleSubmit}>
-        {/* Re-using the same structure as CreateReportPage */}
+        {/* Your existing Name field (no change) */}
         <div className="form-group">
           <label htmlFor="name">Full Name *</label>
           <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required />
         </div>
 
+        {/* Your existing Age & Gender fields (no change) */}
         <div className="form-row">
           <div className="form-group">
             <label htmlFor="age">Age *</label>
@@ -108,30 +110,43 @@ function EditReportPage() {
           </div>
         </div>
 
+        {/* Your existing Last Seen Location field (no change) */}
         <div className="form-group">
           <label htmlFor="lastSeenLocation">Last Seen Location *</label>
           <input type="text" id="lastSeenLocation" name="lastSeenLocation" value={formData.lastSeenLocation} onChange={handleChange} required placeholder="e.g., New Bus Stand, Salem, Tamil Nadu"/>
           <small>Be specific for accurate mapping.</small>
         </div>
 
+        {/* Your existing Description field (no change) */}
         <div className="form-group">
           <label htmlFor="description">Description (Clothing, details) *</label>
           <textarea id="description" name="description" value={formData.description} onChange={handleChange} required rows="4" />
         </div>
 
+        {/* ✅ --- UPDATED FIELD --- ✅ */}
         <div className="form-group">
-          <label htmlFor="contactPhone">Your Contact Phone (Optional)</label>
-          <input type="tel" id="contactPhone" name="contactPhone" value={formData.contactPhone} onChange={handleChange} placeholder="e.g., 9876543210"/>
-           <small>Used only if someone finds the person.</small>
+          {/* 1. Changed label text */}
+          <label htmlFor="contactPhone">Your Contact Phone *</label>
+          <input 
+            type="tel" 
+            id="contactPhone" 
+            name="contactPhone" 
+            value={formData.contactPhone} 
+            onChange={handleChange} 
+            placeholder="e.g., 9876543210"
+            required // 2. Added required attribute
+          />
+           {/* 3. Removed the <small> tag */}
         </div>
 
+        {/* Your existing Photo Upload field (no change) */}
         <div className="form-group">
-          {/* Show current photo maybe? For now, just upload new */}
           <label htmlFor="photo">Upload New Photo (Optional)</label>
           <input type="file" id="photo" name="photo" onChange={handlePhotoChange} accept="image/*" />
            {photo && <p className="file-name">Selected: {photo.name}</p>}
         </div>
 
+        {/* Your existing Button (no change) */}
         <button type="submit" className="submit-button">Update Report</button>
       </form>
     </div>

@@ -72,3 +72,28 @@ router.post('/login', async (req, res) => {
 });
 
 module.exports = router;
+
+// Add this route at the bottom of server/routes/users.js (above module.exports)
+router.post('/forgot-password-reset', async (req, res) => {
+  try {
+    const { email, name, newPassword } = req.body;
+
+    // 1. Look for a user matching BOTH the exact email and name
+    const user = await User.findOne({ email, name });
+    if (!user) {
+      return res.status(404).json({ message: "Verification failed. Incorrect Email or Name." });
+    }
+
+    // 2. Hash the brand new password before saving it
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    // 3. Update the user document and save
+    user.password = hashedPassword;
+    await user.save();
+
+    res.status(200).json({ message: "Password reset successful! You can now log in." });
+  } catch (error) {
+    res.status(500).json({ message: "Server error during reset", error: error.message });
+  }
+});

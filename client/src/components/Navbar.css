@@ -2,76 +2,105 @@
 
 .navbar {
   display: flex;
-  justify-content: space-between; /* Pushes brand to left, links to right */
+  justify-content: space-between;
   align-items: center;
   background-color: #1f1f1f;
-  padding: 1rem 2rem; /* Consistent padding */
+  padding: 1rem 2rem;
   border-bottom: 1px solid #333;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 }
 
-/* --- Brand/Logo Styling --- */
 .navbar-brand {
   font-size: 1.5rem;
   font-weight: bold;
   color: #fff;
-  text-decoration: none; /* Removes underline */
+  text-decoration: none;
   transition: color 0.2s ease;
-  /* Ensure no pseudo-elements adding characters */
-  position: relative;
 }
+
 .navbar-brand:hover {
-  color: #bb86fc; /* Your theme's hover color */
-}
-/* Explicitly remove any potential added content */
-.navbar-brand::before,
-.navbar-brand::after {
-    content: none;
+  color: #bb86fc;
 }
 
-
-/* --- Links Section --- */
 .navbar-links {
   display: flex;
   align-items: center;
-  gap: 2rem; /* Creates spacing between all items */
+  gap: 2rem;
 }
 
-/* Style ALL links AND the logout button */
 .navbar-links a,
 .navbar-links .logout-button {
-  color: #e0e0e0; /* Soft white */
-  text-decoration: none; /* Removes underline */
+  color: #e0e0e0;
+  text-decoration: none;
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
   transition: color 0.2s ease;
-  padding: 5px 0; /* Add slight vertical padding for better hover */
 }
 
-/* Resets the button to look like text */
 .logout-button {
   background: none;
   border: none;
-  padding: 0; /* Reset padding */
-  margin: 0; /* Reset margin */
-  font-family: inherit; /* Makes the font match the links */
-  /* Re-apply link styles to ensure consistency */
-  color: #e0e0e0;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: color 0.2s ease;
+  font-family: inherit;
 }
 
-/* Styles "My Reports" link with the icon */
-.profile-link {
-  display: flex;
-  align-items: center;
-  gap: 8px; /* Space between icon and text */
-}
-
-/* Hover effect for ALL items */
 .navbar-links a:hover,
 .navbar-links .logout-button:hover {
-  color: #bb86fc; /* Glows with your theme color */
+  color: #bb86fc;
+}
+
+/* --- 📱 MOBILE RESPONSIVE LOGIC --- */
+
+/* Hide the hamburger icon on large screens */
+.hamburger-menu {
+  display: none;
+  flex-direction: column;
+  gap: 6px;
+  cursor: pointer;
+  z-index: 1001;
+}
+
+/* Style for the "Two Lines" from your image */
+.hamburger-menu .bar {
+  width: 28px;
+  height: 3px;
+  background-color: white;
+  border-radius: 2px;
+  transition: 0.3s ease;
+}
+
+@media (max-width: 850px) {
+  .hamburger-menu {
+    display: flex; /* Show the 2 lines on mobile */
+  }
+
+  .navbar-links {
+    position: fixed;
+    right: -100%; /* Start hidden off-screen */
+    top: 0;
+    flex-direction: column;
+    background-color: #1a1a1a;
+    width: 250px;
+    height: 100vh;
+    padding: 80px 2rem;
+    gap: 2rem;
+    transition: 0.4s ease-in-out;
+    border-left: 1px solid #333;
+    align-items: flex-start;
+  }
+
+  /* When menu is open, slide it in */
+  .navbar-links.show-mobile {
+    right: 0;
+  }
+
+  /* Animation: Turn 2 lines into an 'X' when open */
+  .active .bar:nth-child(1) {
+    transform: translateY(4.5px) rotate(45deg);
+  }
+  .active .bar:nth-child(2) {
+    transform: translateY(-4.5px) rotate(-45deg);
+  }
 }

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import './Form.css'; // We will style this in the next step
+import './Form.css'; // Your existing CSS file
 
 function CreateReportPage() {
   const [formData, setFormData] = useState({
@@ -12,12 +12,13 @@ function CreateReportPage() {
     gender: 'Male', // Default value
     lastSeenLocation: '',
     description: '',
-    contactPhone: '' // New field
+    contactPhone: '' // Your existing field
   });
   const [photo, setPhoto] = useState(null);
-  const [error, setError] = useState(''); // State for showing errors
+  const [error, setError] = useState(''); // Your existing state
   const navigate = useNavigate();
 
+  // Your existing handleChange function (no change)
   const handleChange = (e) => {
     const { name, value } = e.target;
     // Fix for age being sent as string
@@ -25,12 +26,14 @@ function CreateReportPage() {
     setFormData({ ...formData, [name]: updatedValue });
   };
 
+  // Your existing handlePhotoChange function (no change)
   const handlePhotoChange = (e) => {
     if (e.target.files[0]) {
       setPhoto(e.target.files[0]);
     }
   };
 
+  // Your existing handleSubmit function (no change, it's correct)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(''); // Clear previous errors
@@ -46,7 +49,7 @@ function CreateReportPage() {
     reportData.append('gender', formData.gender);
     reportData.append('lastSeenLocation', formData.lastSeenLocation);
     reportData.append('description', formData.description);
-    reportData.append('contactPhone', formData.contactPhone); // Add phone
+    reportData.append('contactPhone', formData.contactPhone); // This was already correct
     reportData.append('photo', photo);
 
     try {
@@ -69,20 +72,20 @@ function CreateReportPage() {
   };
 
   return (
-    <div className="form-container professional-form"> {/* Added class */}
+    <div className="form-container professional-form"> {/* Your existing class */}
       <h2>Report a Missing Person</h2>
       <p>Please provide as much detail as possible.</p>
 
       {error && <p className="error-message">{error}</p>}
 
       <form onSubmit={handleSubmit}>
-        {/* Name */}
+        {/* Your existing Name field (no change) */}
         <div className="form-group">
           <label htmlFor="name">Full Name *</label>
           <input type="text" id="name" name="name" value={formData.name} onChange={handleChange} required />
         </div>
 
-        {/* Age & Gender side-by-side */}
+        {/* Your existing Age & Gender fields (no change) */}
         <div className="form-row">
           <div className="form-group">
             <label htmlFor="age">Age *</label>
@@ -98,33 +101,43 @@ function CreateReportPage() {
           </div>
         </div>
 
-        {/* Last Seen Location */}
+        {/* Your existing Last Seen Location field (no change) */}
         <div className="form-group">
           <label htmlFor="lastSeenLocation">Last Seen Location *</label>
           <input type="text" id="lastSeenLocation" name="lastSeenLocation" value={formData.lastSeenLocation} onChange={handleChange} required placeholder="e.g., New Bus Stand, Salem, Tamil Nadu"/>
           <small>Be specific for accurate mapping.</small>
         </div>
 
-        {/* Description */}
+        {/* Your existing Description field (no change) */}
         <div className="form-group">
           <label htmlFor="description">Description (Clothing, details) *</label>
           <textarea id="description" name="description" value={formData.description} onChange={handleChange} required rows="4" />
         </div>
 
-        {/* Contact Phone (Optional) */}
+        {/* ✅ --- UPDATED FIELD --- ✅ */}
         <div className="form-group">
-          <label htmlFor="contactPhone">Your Contact Phone (Optional)</label>
-          <input type="tel" id="contactPhone" name="contactPhone" value={formData.contactPhone} onChange={handleChange} placeholder="e.g., 9876543210"/>
-           <small>Used only if someone finds the person.</small>
+          {/* 1. Changed label text */}
+          <label htmlFor="contactPhone">Your Contact Phone *</label>
+          <input 
+            type="tel" 
+            id="contactPhone" 
+            name="contactPhone" 
+            value={formData.contactPhone} 
+            onChange={handleChange} 
+            placeholder="e.g., 9876543210"
+            required // 2. Added required attribute
+          />
+           {/* 3. Removed the <small> tag */}
         </div>
 
-        {/* Photo Upload */}
+        {/* Your existing Photo Upload field (no change) */}
         <div className="form-group">
           <label htmlFor="photo">Upload Recent Photo *</label>
           <input type="file" id="photo" name="photo" onChange={handlePhotoChange} required accept="image/*" />
           {photo && <p className="file-name">Selected: {photo.name}</p>}
         </div>
 
+        {/* Your existing Button (no change) */}
         <button type="submit" className="submit-button">Submit Report</button>
       </form>
     </div>

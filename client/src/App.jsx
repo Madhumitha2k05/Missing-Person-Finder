@@ -10,7 +10,12 @@ import CreateReportPage from './pages/CreateReportPage';
 import EditReportPage from './pages/EditReportPage';
 import ReportDetailPage from './pages/ReportDetailPage';
 import MyReportsPage from './pages/MyReportsPage';
-import FoundPersonsPage from './pages/FoundPersonsPage'; // <-- 1. IMPORT NEW PAGE
+import FoundPersonsPage from './pages/FoundPersonsPage'; 
+import ProfilePage from './pages/ProfilePage';
+import ForgotPassword from './pages/ForgotPassword';
+
+// ✅ NEW IMPORT: Admin Dashboard Page
+import AdminDashboardPage from './pages/AdminDashboardPage';
 
 // Import your main components
 import Navbar from './components/Navbar';
@@ -33,9 +38,12 @@ function App() {
           <Route path="/edit-report/:id" element={<EditReportPage />} />
           <Route path="/reports/:id" element={<ReportDetailPage />} />
           <Route path="/my-reports" element={<MyReportsPage />} />
-
-          {/* ✅ --- 2. ADD THE NEW ROUTE --- ✅ */}
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/found" element={<FoundPersonsPage />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+
+          {/* ✅ NEW ROUTE: Admin Route Control Endpoint */}
+          <Route path="/admin" element={<AdminDashboardPage />} />
 
         </Routes>
       </main>

@@ -1,6 +1,6 @@
 /* File: client/src/components/ReportCard.css */
 
-/* --- YOUR EXISTING STYLES (NO CHANGES) --- */
+/* --- YOUR EXISTING STYLES (NO CHANGES TO LOGIC) --- */
 .report-card {
   background-color: #1f1f1f;
   border: 1px solid #333;
@@ -10,6 +10,7 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth hover effect */
   display: flex; /* We will use flexbox for the layout */
   flex-direction: column;
+  height: 100%; /* Make card fill its container */
 }
 
 /* This makes the card lift and glow on hover */
@@ -18,15 +19,24 @@
   box-shadow: 0 8px 25px rgba(187, 134, 252, 0.15);
 }
 
+/* ✅ --- CRITICAL: THE IMAGE FIX --- ✅ */
 .report-photo {
-  width: 100%;
-  height: 300px; /* Give the photo a fixed height */
-  object-fit: cover; /* This ensures the image covers the area without stretching */
+  width: 100% !important; /* Ensure full width, important to override */
+  height: 300px !important; /* Fixed height, important to override */
+  object-fit: cover !important; /* THIS IS THE KEY: Prevents stretching, crops instead */
+  display: block !important; /* Ensures it behaves as a block element */
+  /* Remove any padding/margin that might cause issues */
+  padding: 0 !important;
+  margin: 0 !important;
 }
+/* ✅ --- END OF CRITICAL FIX --- ✅ */
+
 
 .card-content {
   padding: 1.5rem; /* Add good spacing inside the card */
-  flex-grow: 1; /* Allows this section to grow and fill available space */
+  flex-grow: 1; /* Allows this section to grow */
+  display: flex;
+  flex-direction: column;
 }
 
 .card-content h2 {
@@ -82,7 +92,7 @@
   background-color: #c43235;
 }
 
-/* --- ✅ NEW STYLES ADDED AT THE BOTTOM --- */
+/* --- YOUR NEW STYLES (NO CHANGES) --- */
 
 /* This new class styles the header (name + tag) */
 .card-header {
@@ -104,7 +114,17 @@
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
+  flex-grow: 1; /* Pushes the last seen location down */
 }
+
+/* Added style for the last-seen <p> tag */
+.card-content p.card-last-seen {
+  font-size: 0.9rem;
+  color: #aaa;
+  margin-top: auto; /* Pushes to the bottom */
+  padding-top: 0.5rem;
+}
+
 
 /* This is the base style for your new tag */
 .status-tag {

@@ -32,11 +32,12 @@ const ReportSchema = new mongoose.Schema({
     default: 'Missing'
   },
 
-  // ✅ --- ADDED PHONE NUMBER FIELD --- ✅
-  // Making it optional (not required)
+  // ✅ --- UPDATED FIELD --- ✅
+  // Making it required as you asked
   contactPhone: {
     type: String,
-    trim: true // Removes extra whitespace
+    trim: true, // Removes extra whitespace
+    required: true // Now it is required
   }
 });
 
