@@ -8,15 +8,17 @@ function AdminDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
-  // Fetch data safely
+  // Fetch all listings inside database registry using admin privileges
   const fetchAllReports = async () => {
     try {
-      // ✅ Using the public route directly to bypass fake token format restrictions
-      const res = await axios.get('http://localhost:5001/api/reports');
+      const token = localStorage.getItem('token');
+      const res = await axios.get('http://localhost:5001/api/reports/admin/all', {
+        headers: { 'x-auth-token': token }
+      });
       setReports(res.data);
       setLoading(false);
     } catch (err) {
-      setError('Failed to load administration files.');
+      setError('Failed to load system administration files.');
       setLoading(false);
     }
   };
@@ -25,51 +27,34 @@ function AdminDashboardPage() {
     fetchAllReports();
   }, []);
 
-  // Action: Change status to Found
+  // Action: Master Admin status override to Found
   const handleMarkAsFound = async (id) => {
     if (!window.confirm("Are you sure you want to change this person's status to Found?")) return;
     try {
-      // ✅ Crucial Fix: Use the direct status endpoint which updates your record quickly
-      await axios.put(`http://localhost:5001/api/reports/${id}/status`, 
+      const token = localStorage.getItem('token');
+      await axios.put(`http://localhost:5001/api/reports/admin/status/${id}`, 
         { status: 'Found' },
-        { headers: { 'x-auth-token': localStorage.getItem('token') } }
+        { headers: { 'x-auth-token': token } }
       );
       alert("Status updated to Found successfully!");
-      fetchAllReports(); // Refresh screen listings
+      fetchAllReports(); 
     } catch (err) {
-      // Secondary fallback just in case authorization headers are parsed rigidly
-      try {
-        await axios.put(`http://localhost:5001/api/reports/${id}`, 
-          { status: 'Found', name: 'Override Update' }
-        );
-        alert("Status updated successfully!");
-        fetchAllReports();
-      } catch (innerErr) {
-        alert("Action restriction: To update someone else's report, you must log in with your true Sharvesh account from MongoDB Compass where isAdmin is set to true!");
-      }
+      alert("Failed to alter status code framework: Check configuration.");
     }
   };
 
-  // Action: Delete Report
+  // Action: Master Admin permanent index wipe
   const handleDeleteReport = async (id) => {
-    if (!window.confirm("🚨 CRITICAL: Are you sure you want to permanently delete this report?")) return;
+    if (!window.confirm("🚨 CRITICAL: Are you sure you want to permanently delete this report from the platform registry?")) return;
     try {
       const token = localStorage.getItem('token');
       await axios.delete(`http://localhost:5001/api/reports/admin/delete/${id}`, {
         headers: { 'x-auth-token': token }
       });
-      alert("Report permanently removed.");
+      alert("Report permanently removed from system index.");
       fetchAllReports(); 
     } catch (err) {
-      try {
-        await axios.delete(`http://localhost:5001/api/reports/${id}`, {
-          headers: { 'x-auth-token': token }
-        });
-        alert("Report removed successfully.");
-        fetchAllReports();
-      } catch (innerErr) {
-        alert("Delete restriction: Regular tokens cannot delete other users' posts. Log into your real admin account.");
-      }
+      alert("Delete transaction failed.");
     }
   };
 

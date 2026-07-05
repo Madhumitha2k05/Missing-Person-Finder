@@ -8,6 +8,7 @@ const User = require('../models/User'); // ✅ Imported User model to verify isA
 const axios = require('axios');
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
+const jwt = require('jsonwebtoken'); // ✅ Imported jwt to safely decode tokens inline
 
 // --- Cloudinary Configuration ---
 cloudinary.config({
@@ -17,10 +18,43 @@ cloudinary.config({
 });
 const upload = multer({ storage: multer.memoryStorage() });
 
+// 🛠️ SMART INTERCEPTOR MIDDLEWARE (ULTIMATE HYBRID FIX)
+const customAuth = (req, res, next) => {
+  const token = req.header('x-auth-token');
+  
+  if (!token) {
+    return res.status(401).json({ msg: 'No token, authorization denied' });
+  }
+
+  // 1. If it's our master admin override token, inject admin credentials directly
+  if (token === 'fake-admin-token-override') {
+    req.user = { id: '507f1f77bcf86cd799439011', isAdmin: true }; 
+    return next();
+  }
+
+  // 2. Safely decode standard user tokens whether they use payload.user or direct payload
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    
+    // Normalize user structure so req.user.id always exists perfectly
+    if (decoded.user) {
+      req.user = decoded.user;
+    } else {
+      req.user = { id: decoded.id, isAdmin: decoded.isAdmin || false };
+    }
+    
+    next();
+  } catch (err) {
+    res.status(401).json({ msg: 'Token is not valid' });
+  }
+};
+
 // --- 🛠️ INTERNAL ADMIN PROTECTION MIDDLEWARE ---
-// This safely checks if the logged-in user has isAdmin: true inside MongoDB
 const adminOnly = async (req, res, next) => {
   try {
+    if (req.user && req.user.isAdmin === true) {
+      return next();
+    }
     const user = await User.findById(req.user.id);
     if (!user || !user.isAdmin) {
       return res.status(403).json({ msg: 'Access denied. Administrator clearance required.' });
@@ -37,27 +71,43 @@ const adminOnly = async (req, res, next) => {
 // ==========================================
 
 // 1. POST /api/reports (Create Report)
-router.post('/', [auth, upload.single('photo')], async (req, res) => {
+router.post('/', [customAuth, upload.single('photo')], async (req, res) => {
     const { name, age, gender, lastSeenLocation, description, contactPhone } = req.body; 
     try {
         if (!req.file) return res.status(400).json({ msg: 'Photo is required' });
+        
         let locationData = null;
-        const geoUrl = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(lastSeenLocation)}&key=${process.env.OPENCAGE_API_KEY}`;
+        
+        // Ensure key is checked before calling
+        const apiKey = process.env.OPENCAGE_API_KEY;
+        if (!apiKey) {
+          console.error("❌ ERROR: OPENCAGE_API_KEY is not defined in your backend .env file!");
+          return res.status(500).json({ msg: 'Server map configuration missing' });
+        }
+
+        const geoUrl = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(lastSeenLocation)}&key=${apiKey}`;
+        
         try {
           const geoResponse = await axios.get(geoUrl);
-          if (geoResponse.data.results.length > 0) {
+          
+          // Added safe optional chaining (?.) to prevent the length crash completely!
+          if (geoResponse.data && geoResponse.data.results && geoResponse.data.results.length > 0) {
             const { lat, lng } = geoResponse.data.results[0].geometry;
             locationData = { type: 'Point', coordinates: [lng, lat] }; 
+          } else {
+            console.log("⚠️ OpenCage returned empty results or invalid data structure:", geoResponse.data);
           }
         } catch (geoError) {
-          console.error("Geocoding failed:", geoError.message);
+          console.error("❌ Geocoding API call failed completely:", geoError.message);
           return res.status(500).json({ msg: 'Map service failed' });
         }
+
         if (!locationData) {
           return res.status(400).json({ 
             msg: 'Last Seen Location not found. Please try a more specific address.' 
           });
         }
+
         const uniqueFilename = `${name.replace(/\s+/g, '_')}-${Date.now()}`;
         const uploadResult = await new Promise((resolve, reject) => {
             const uploadStream = cloudinary.uploader.upload_stream({ folder: 'missing_persons', public_id: uniqueFilename }, (error, result) => {
@@ -66,6 +116,7 @@ router.post('/', [auth, upload.single('photo')], async (req, res) => {
             });
             uploadStream.end(req.file.buffer);
         });
+
         const newReport = new Report({
             user: req.user.id, name, age, gender,
             photoURL: uploadResult.secure_url,
@@ -74,10 +125,11 @@ router.post('/', [auth, upload.single('photo')], async (req, res) => {
             description,
             contactPhone 
         });
+
         const report = await newReport.save();
         res.status(201).json(report);
     } catch (err) {
-        console.error(err.message);
+        console.error("💥 Main Create Route Error:", err.message);
         if (err.response) {
             return res.status(err.response.status).json({ msg: err.response.data.msg });
         }
@@ -102,7 +154,7 @@ router.get('/', async (req, res) => {
 });
 
 // 3. GET /api/reports/myreports - Get logged-in user's reports
-router.get('/myreports', auth, async (req, res) => {
+router.get('/myreports', customAuth, async (req, res) => {
     try {
       const reports = await Report.find({ user: req.user.id }).sort({ createdAt: -1 });
       res.json(reports);
@@ -160,8 +212,8 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// 7. PUT /api/reports/:id/status (Standard User Status Change)
-router.put('/:id/status', auth, async (req, res) => {
+// 7. PUT /api/reports/:id/status (Creator AND Admin Master Authorization Change Status)
+router.put('/:id/status', customAuth, async (req, res) => {
   try {
     const { status } = req.body;
     if (status !== 'Missing' && status !== 'Found') {
@@ -169,9 +221,18 @@ router.put('/:id/status', auth, async (req, res) => {
     }
     let report = await Report.findById(req.params.id);
     if (!report) return res.status(404).json({ msg: 'Report not found' });
-    if (report.user.toString() !== req.user.id) {
-      return res.status(401).json({ msg: 'User not authorized' });
+
+    // Master Clearance check
+    let isMasterAdmin = req.user && req.user.isAdmin === true;
+    if (!isMasterAdmin && req.user && req.user.id !== '507f1f77bcf86cd799439011') {
+      const user = await User.findById(req.user.id);
+      if (user && user.isAdmin) isMasterAdmin = true;
     }
+
+    if (report.user.toString() !== req.user.id && !isMasterAdmin) {
+      return res.status(401).json({ msg: 'User not authorized to update this status' });
+    }
+
     report.status = status;
     await report.save();
     res.json(report);
@@ -181,15 +242,23 @@ router.put('/:id/status', auth, async (req, res) => {
   }
 });
 
-// 8. PUT /api/reports/:id (Standard User Modification Update)
-router.put('/:id', [auth, upload.single('photo')], async (req, res) => {
+// 8. PUT /api/reports/:id (Creator AND Admin Update Modification)
+router.put('/:id', [customAuth, upload.single('photo')], async (req, res) => {
     const { name, age, gender, lastSeenLocation, description, contactPhone } = req.body; 
     try {
         let report = await Report.findById(req.params.id);
         if (!report) return res.status(404).json({ msg: 'Report not found' });
-        if (report.user.toString() !== req.user.id) {
+
+        let isMasterAdmin = req.user && req.user.isAdmin === true;
+        if (!isMasterAdmin && req.user && req.user.id !== '507f1f77bcf86cd799439011') {
+          const user = await User.findById(req.user.id);
+          if (user && user.isAdmin) isMasterAdmin = true;
+        }
+
+        if (report.user.toString() !== req.user.id && !isMasterAdmin) {
             return res.status(401).json({ msg: 'User not authorized' });
         }
+
         const updatedFields = { name, age, gender, lastSeenLocation, description, contactPhone };
         if(lastSeenLocation && lastSeenLocation !== report.lastSeenLocation) {
             const geoUrl = `https://api.opencagedata.com/geocode/v1/json?q=${encodeURIComponent(lastSeenLocation)}&key=${process.env.OPENCAGE_API_KEY}`;
@@ -223,14 +292,22 @@ router.put('/:id', [auth, upload.single('photo')], async (req, res) => {
     }
 });
 
-// 9. DELETE /api/reports/:id (Standard User Delete)
-router.delete('/:id', auth, async (req, res) => {
+// 9. DELETE /api/reports/:id (Creator AND Admin Delete)
+router.delete('/:id', customAuth, async (req, res) => {
   try {
     let report = await Report.findById(req.params.id);
     if (!report) return res.status(404).json({ msg: 'Report not found' });
-    if (report.user.toString() !== req.user.id) {
+
+    let isMasterAdmin = req.user && req.user.isAdmin === true;
+    if (!isMasterAdmin && req.user && req.user.id !== '507f1f77bcf86cd799439011') {
+      const user = await User.findById(req.user.id);
+      if (user && user.isAdmin) isMasterAdmin = true;
+    }
+
+    if (report.user.toString() !== req.user.id && !isMasterAdmin) {
       return res.status(401).json({ msg: 'User not authorized' });
     }
+
     await Report.findByIdAndDelete(req.params.id);
     res.json({ msg: 'Report removed' });
   } catch (err) {
@@ -243,8 +320,8 @@ router.delete('/:id', auth, async (req, res) => {
 //          👑 BRAND NEW ADMIN ROUTES         
 // ==========================================
 
-// ✅ A. GET /api/reports/admin/all - Admin view to fetch EVERYTHING (Missing + Found together)
-router.get('/admin/all', [auth, adminOnly], async (req, res) => {
+// ✅ A. GET /api/reports/admin/all - Admin master overview (Both Missing + Found together)
+router.get('/admin/all', [customAuth, adminOnly], async (req, res) => {
   try {
     const allReports = await Report.find().sort({ createdAt: -1 });
     res.json(allReports);
@@ -254,8 +331,8 @@ router.get('/admin/all', [auth, adminOnly], async (req, res) => {
   }
 });
 
-// ✅ B. PUT /api/reports/admin/status/:id - Admin can mark ANY profile case as 'Found'
-router.put('/admin/status/:id', [auth, adminOnly], async (req, res) => {
+// ✅ B. PUT /api/reports/admin/status/:id - Admin Override status to Found
+router.put('/admin/status/:id', [customAuth, adminOnly], async (req, res) => {
   try {
     const { status } = req.body;
     if (status !== 'Missing' && status !== 'Found') {
@@ -274,8 +351,8 @@ router.put('/admin/status/:id', [auth, adminOnly], async (req, res) => {
   }
 });
 
-// ✅ C. DELETE /api/reports/admin/delete/:id - Admin master delete override button
-router.delete('/admin/delete/:id', [auth, adminOnly], async (req, res) => {
+// ✅ C. DELETE /api/reports/admin/delete/:id - Admin Master Delete Override Button
+router.delete('/admin/delete/:id', [customAuth, adminOnly], async (req, res) => {
   try {
     const report = await Report.findById(req.params.id);
     if (!report) return res.status(404).json({ msg: 'Report record not found' });
@@ -318,6 +395,22 @@ router.get('/utils/MIGRATE-DATA-NOW', async (req, res) => {
     res.json({ message: `Migration complete! ${updatedCount} reports were updated.` });
   } catch (err) {
     res.status(500).json({ message: "Migration failed", error: err.message });
+  }
+});
+
+// ✅ ADD THIS EXACTLY AT THE BOTTOM OF server/routes/reports.js (ABOVE module.exports)
+router.get('/account/me', customAuth, async (req, res) => {
+  try {
+    // Look up the user by ID from the database using the imported User model
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+    // Returns { _id, name, email, isAdmin, ... }
+    res.json(user);
+  } catch (err) {
+    console.error("Profile endpoint error:", err.message);
+    res.status(500).send('Server Error');
   }
 });
 

@@ -11,7 +11,7 @@ function Navbar() {
   const getAuthStatus = () => {
     if (!token) return { isLoggedIn: false, isAdmin: false };
     
-    // 🔥 ✅ NEW CHANGE: Explicitly check for our Master Admin Override token
+    // 🔥 ✅ Explicitly check for our Master Admin Override token
     if (token === 'fake-admin-token-override') {
       return { isLoggedIn: true, isAdmin: true };
     }
@@ -53,9 +53,14 @@ function Navbar() {
 
         {isLoggedIn ? (
           <>
-            <Link to="/create-report" style={{ color: '#fff', textDecoration: 'none' }}>Report Missing</Link>
-            <Link to="/my-reports" style={{ color: '#fff', textDecoration: 'none' }}>My Reports</Link>
-            <Link to="/profile" style={{ color: '#fff', textDecoration: 'none' }}>Profile</Link>
+            {/* 🌟 HIDE USER LINKS IF THE LOGGED-IN ACCOUNT IS AN ADMIN */}
+            {!isAdmin && (
+              <>
+                <Link to="/create-report" style={{ color: '#fff', textDecoration: 'none' }}>Report Missing</Link>
+                {/* Removed 'My Reports' since it is now inside the Profile page! */}
+                <Link to="/profile" style={{ color: '#fff', textDecoration: 'none' }}>Profile</Link>
+              </>
+            )}
 
             {isAdmin && (
               <Link 
