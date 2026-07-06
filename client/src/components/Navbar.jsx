@@ -43,7 +43,7 @@ function Navbar() {
     <nav className="navbar" style={{ backgroundColor: '#121212', padding: '1rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #333' }}>
       <div className="navbar-brand">
         <Link to="/" style={{ color: '#bb86fc', fontSize: '1.5rem', fontWeight: 'bold', textDecoration: 'none' }}>
-          🔍 FinderApp
+          🔍 Missing Person Finder
         </Link>
       </div>
 
