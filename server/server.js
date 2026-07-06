@@ -8,6 +8,10 @@ const cors = require('cors'); // Imports the cors package
 const reportRoutes = require('./routes/reports'); // Imports your API routes for reports
 const userRoutes = require('./routes/users'); // Imports your new API routes for users
 
+// 👤 Import the custom authentication middleware and User Model for our profile route
+const customAuth = require('./middleware/auth'); // Make sure this path matches your auth middleware file!
+const User = require('./models/User'); // Make sure this path matches your User model schema file!
+
 // --- APP INITIALIZATION ---
 const app = express();
 const PORT = process.env.PORT || 5001;
@@ -28,6 +32,24 @@ const connectDB = async () => {
   }
 };
 
+// --- EXTRA PRODUCTION ROUTES ---
+
+// ✅ NEW USER ACCOUNT ENDPOINT FOR PROFILE PAGE
+// This responds to GET requests at: http://localhost:5001/api/reports/account/me
+app.get('/api/reports/account/me', customAuth, async (req, res) => {
+  try {
+    // req.user.id is securely extracted from the token by your customAuth middleware
+    const user = await User.findById(req.user.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ msg: 'User record not found in database' });
+    }
+    res.json(user); // Sends back the user object containing { name, email, ... }
+  } catch (err) {
+    console.error("Profile endpoint error:", err.message);
+    res.status(500).send('Server Profile Error');
+  }
+});
+
 // --- ROUTES ---
 // This tells the app which router to use for different URL paths
 app.use('/api/reports', reportRoutes); // Handles all URLs starting with /api/reports
@@ -38,6 +60,6 @@ app.use('/api/users', userRoutes); // ✅ Handles all URLs starting with /api/us
 // connection, it starts the web server to listen for requests.
 connectDB().then(() => {
   app.listen(PORT, () => {
-    console.log(`Server listening on http://localhost:${PORT}`);
+    console.log(`Server listening on port ${PORT}`);
   });
 });
