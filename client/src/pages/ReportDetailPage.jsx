@@ -1,6 +1,6 @@
 // client/src/pages/ReportDetailPage.jsx
 
-import { useState, useEffect, useRef } from 'react'; // Added useRef here
+import { useState, useEffect, useRef } from 'react'; 
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
 // Import map components
@@ -13,11 +13,14 @@ function ReportDetailPage() {
   const { id } = useParams();
   const [report, setReport] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState(null); // ✅ Tracks logged-in user details
+  const [updateLoading, setUpdateLoading] = useState(false); // ✅ Visual loader for button
   
   // Create a "ref" to find our hidden poster template in the HTML
   const posterRef = useRef();
 
   useEffect(() => {
+    // 1. Fetch individual missing person report details
     const fetchReport = async () => {
       try {
         setLoading(true);
@@ -29,10 +32,70 @@ function ReportDetailPage() {
         setLoading(false);
       }
     };
+
+    // 2. Fetch logged-in user profile safely to match IDs for security
+    const fetchCurrentUser = async () => {
+      const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+      if (!token) return; // Keep going as guest if no token exists
+
+      try {
+        const config = {
+          headers: {
+            'x-auth-token': token
+          }
+        };
+        const response = await axios.get('http://localhost:5001/api/reports/account/me', config);
+        setCurrentUser(response.data);
+      } catch (error) {
+        console.error("Error fetching user profile authorization context:", error);
+      }
+    };
+
     fetchReport();
+    fetchCurrentUser();
   }, [id]);
 
-  // ✅ --- POSTER GENERATOR LOGIC --- ✅
+  // ✅ --- BRAND NEW MARK AS FOUND UPDATE ACTION --- ✅
+  const handleMarkAsFound = async () => {
+    const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+    if (!token) {
+      alert("Please login first to update this status!");
+      return;
+    }
+
+    if (!window.confirm("Are you absolutely sure this person has been found? This will update the case record.")) {
+      return;
+    }
+
+    try {
+      setUpdateLoading(true);
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          'x-auth-token': token
+        }
+      };
+      
+      // Calls your existing backend Route #7 logic safely
+      const response = await axios.put(
+        `http://localhost:5001/api/reports/${id}/status`,
+        { status: 'Found' },
+        config
+      );
+
+      // Instantly updates UI state dynamically without hard refreshing the screen!
+      setReport(response.data);
+      alert("Case status successfully updated to Found! 🎉");
+    } catch (error) {
+      console.error("Status modification failed:", error);
+      const errorMsg = error.response?.data?.msg || "You are not authorized to update this status profile.";
+      alert(`Error: ${errorMsg}`);
+    } finally {
+      setUpdateLoading(false);
+    }
+  };
+
+  // ✅ --- POSTER GENERATOR LOGIC (UNTOUCHED) --- ✅
   const downloadPoster = async () => {
     const element = posterRef.current;
     
@@ -74,6 +137,13 @@ function ReportDetailPage() {
 
   const statusClass = `status-tag status-${report.status?.toLowerCase() || 'missing'}`;
 
+  // 🔒 Authorization Verification Logic check
+  // Shows button ONLY if person is still "Missing" AND (the logged-in user's ID matches the report's creator user field OR user is an Admin)
+  const canModifyStatus = 
+    report.status !== 'Found' && 
+    currentUser && 
+    (currentUser._id === report.user || currentUser.id === report.user || currentUser.isAdmin === true);
+
   return (
     <div className="detail-page-container">
       <Link to="/" className="back-link">← Back to Dashboard</Link>
@@ -93,8 +163,48 @@ function ReportDetailPage() {
             <p><strong>Contact Phone:</strong> {report.contactPhone}</p>
           )}
 
-          {/* ✅ --- NEW POSTER BUTTON --- ✅ */}
-          <div className="action-buttons">
+          {/* ✅ --- CONDITIONAL STATUS ALTERATION BUTTON --- ✅ */}
+          {canModifyStatus && (
+            <div style={{ marginTop: '15px' }}>
+              <button 
+                onClick={handleMarkAsFound} 
+                disabled={updateLoading}
+                style={{
+                  backgroundColor: '#28a745',
+                  color: 'white',
+                  padding: '12px 24px',
+                  border: 'none',
+                  borderRadius: '6px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold',
+                  fontSize: '15px',
+                  boxShadow: '0 2px 5px rgba(0,0,0,0.15)',
+                  transition: 'background-color 0.2s'
+                }}
+              >
+                {updateLoading ? 'Updating Status...' : 'Mark as Found ✅'}
+              </button>
+            </div>
+          )}
+
+          {/* Special celebration banner shown once person is marked found */}
+          {report.status === 'Found' && (
+            <div style={{
+              marginTop: '15px',
+              backgroundColor: '#d4edda',
+              color: '#155724',
+              padding: '12px',
+              borderRadius: '6px',
+              fontWeight: 'bold',
+              textAlign: 'center',
+              border: '1px solid #c3e6cb'
+            }}>
+              🎉 Success! This individual has been safely located. Case Closed.
+            </div>
+          )}
+
+          {/* ✅ --- POSTER BUTTON (UNTOUCHED) --- ✅ */}
+          <div className="action-buttons" style={{ marginTop: '20px' }}>
             <button onClick={downloadPoster} className="poster-button">
               📥 Download Print Poster (PDF)
             </button>
@@ -102,7 +212,7 @@ function ReportDetailPage() {
         </div>
       </div>
 
-      {/* --- Map Rendering --- */}
+      {/* --- Map Rendering (UNTOUCHED) --- */}
       <div className="map-section">
          <h2>Last Known Location on Map</h2>
          {position ? ( 
@@ -122,7 +232,7 @@ function ReportDetailPage() {
          )}
       </div>
 
-      {/* --- ✅ HIDDEN POSTER TEMPLATE (ONLY USED FOR PDF) ✅ --- */}
+      {/* --- ✅ HIDDEN POSTER TEMPLATE (ONLY USED FOR PDF - UNTOUCHED) ✅ --- */}
       <div id="poster-template" ref={posterRef} style={{ display: 'none' }}>
         <div className="poster-content">
           <h1 className="poster-title">MISSING</h1>

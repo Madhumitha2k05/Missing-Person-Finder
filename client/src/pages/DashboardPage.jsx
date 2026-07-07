@@ -198,6 +198,24 @@ function DashboardPage() {
           )}
         </div>
       )}
+
+      {/* 🔒 COPYRIGHT FOOTER (PERFECTLY INSTALLED WITH SYNTAX FIXES) */}
+      <footer style={{
+        textAlign: 'center',
+        padding: '20px',
+        color: '#6c757d',
+        fontSize: '14px',
+        borderTop: '1px solid #dee2e6',
+        marginTop: '50px',
+        backgroundColor: '#f8f9fa',
+        width: '100%'
+      }}>
+        <p>© 2026 Missing Person Finder. All Rights Reserved.</p>
+        <p style={{ fontSize: '11px', marginTop: '4px', color: '#dc3545', fontWeight: '500' }}>
+          Designed & Developed by Madhumitha. Unauthorised cloning, code modification, or distribution of this source code is strictly prohibited.
+        </p>
+      </footer>
+
     </div>
   );
 }
