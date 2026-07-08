@@ -386,7 +386,7 @@ Artificial Intelligence and Data Science Student
 
 GitHub: https://github.com/Madhumitha2k05
 
-LinkedIn: https://www.linkedin.com/in/madhumithak2005
+LinkedIn: https://www.linkedin.com/in/madhumitha-k-145b50309
 
 ---
 
